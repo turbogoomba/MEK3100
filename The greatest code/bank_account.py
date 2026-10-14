@@ -1,21 +1,25 @@
-from datetime import datetime
+import time
 from functools import wraps
 
-def time_decorator(fn):
+def time_transaction_decorator(fn):
     @wraps(fn)
-    def inner(*args, **kwargs):
-        return datetime.now()
+    def inner(self, amount):
+        if amount <= 0:
+            print("negative or zero amounts is not allowed")
+        else:
+            t = time.strftime("%Y-%m-%d %H:%M:%S")
+            self.transactions.append({"type":f"{fn.__name__}", "amount":amount, "timestamp": t})
+            fn(self, amount)
     return inner
 
 def enough_in_balance(fn):
     @wraps(fn)
     def inner(self, amount):
-        if amount <= 0 or (self.balance - amount) < 0:
-            print("Withdrawing negative, zero or amounts larger than your balance is not allowed")
+        if (self.balance - amount) < 0:
+            print("amounts larger than your balance is not allowed")
         else:
             fn(self, amount)
     return inner
-
 
 account_created = False
 
@@ -30,20 +34,25 @@ class BankAccount:
     def __init__(self,):
         self.balance = 0
         self.transactions = []
-    def deposit(self, amount): #deposit amount into the balance
-        if amount <= 0:
-            print("depositing negative amounts")
-        else:
-            self.balance += amount
 
+    @time_transaction_decorator
+    def deposit(self, amount): #deposit amount into the balance
+        self.balance += amount
+    
     @enough_in_balance
+    @time_transaction_decorator
     def withdraw(self, amount): #withdraw amount from the balance
         self.balance -= amount
 
     def balance_inquiry(self):
         return print(f"current balance is {self.balance} kr")
     def transaction_history(self):
-        pass
+        if self.transactions:
+            for i in self.transactions:
+                print(i)
+        else:
+            print("there is no history")
+
     def retrive_transactions(self):
         pass
     def account_statement(self):
@@ -97,19 +106,19 @@ Type a number """)
                 account.balance_inquiry()
         case "5": #Check the transaction history
             if is_created():
-                account.transaction_history
+                account.transaction_history()
         case "6": #Retrives the past transactions
             if is_created():
-                account.retrive_transactions
+                account.retrive_transactions()
         case "7": #Checks the account statement
             if is_created():
-                account.account_statement
+                account.account_statement()
         case "8": # Checks the account summary
             if is_created():
-                account.account_summary
+                account.account_summary()
         case "9": # Closes the account
             if is_created():
-                account.account_clousure
+                account.account_clousure()
                 print("account is closed")
                 account_created = False
         case "10": # checks if the account is closed
