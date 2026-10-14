@@ -12,6 +12,8 @@ def enough_in_balance(fn):
     def inner(self, amount):
         if amount <= 0 or (self.balance - amount) < 0:
             print("Withdrawing negative, zero or amounts larger than your balance is not allowed")
+        else:
+            fn(self, amount)
     return inner
 
 def is_created(skip_print = False):
@@ -40,7 +42,7 @@ class BankAccount:
         self.balance -= amount
 
     def balance_inquiry(self):
-        pass
+        return print(f"current balance is {self.balance} kr")
     def transaction_history(self):
         pass
     def retrive_transactions(self):
@@ -62,17 +64,12 @@ while True:
     print("~"*100)
     menu = input("""
 what do you want to do?:
-0: quit
-1: create account
-2: deposit
-3: withdraw
-4: inquire balance
+0: quit                     6: retrive transactions
+1: create account           7: see account statement
+2: deposit                  8: see account summary
+3: withdraw                 9: close account
+4: inquire balance          10: check if account is closed
 5: see transaction history
-6: retrive transactions
-7: see account statement
-8: see account summary
-9: close account
-10: check if account is closed
 Type a number """)
     print("\n")
     match menu:
@@ -82,7 +79,7 @@ Type a number """)
                 if is_created(skip_print = True):
                     print("Account already exists")
                 else:
-                    account = BankAccount()
+                    account = BankAccount() #makes the account again and resets the balance aswell as the history
                     print("your account has succesfully been created")
                     account_created = True
                 
@@ -98,7 +95,7 @@ Type a number """)
                 print("")
         case "4": #checks the balance
             if is_created():
-                account.balance_inquiry
+                account.balance_inquiry()
         case "5": #Check the transaction history
             if is_created():
                 account.transaction_history
