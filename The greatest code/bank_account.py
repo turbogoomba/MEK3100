@@ -16,16 +16,15 @@ def enough_in_balance(fn):
             fn(self, amount)
     return inner
 
+
+account_created = False
+
 def is_created(skip_print = False):
     if not account_created:
         if not skip_print:
             print("There is no account")
         return False
     return True
-
-account_created = False
-
-
 
 class BankAccount:
     def __init__(self,):
