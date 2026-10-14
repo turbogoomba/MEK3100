@@ -41,7 +41,7 @@ class BankAccount:
     
     @enough_in_balance
     @time_transaction_decorator
-    def withdrawl(self, amount): #withdraw amount from the balance
+    def withdraw(self, amount): #withdraw amount from the balance
         self.balance -= amount
 
     def balance_inquiry(self):
@@ -72,11 +72,8 @@ class BankAccount:
         pass
 
 
-
-
-
 while True:
-    print("~"*100)
+    print("~"*100) #shows the menu and allows input
     menu = input("""
 what do you want to do?:
 0: quit                     6: retrive transactions
@@ -105,7 +102,7 @@ Type a number """)
         case "3": #Withdraws an amount from the account
             if is_created():
                 amount = float(input("how much do you want to withdraw? "))
-                account.withdrawl(amount)
+                account.withdraw(amount)
             else:
                 print("")
         case "4": #checks the balance
