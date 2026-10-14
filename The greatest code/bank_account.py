@@ -16,7 +16,7 @@ def enough_in_balance(fn):
     @wraps(fn)
     def inner(self, amount):
         if (self.balance - amount) < 0:
-            print("amounts larger than your balance is not allowed")
+            print("withdrawing amounts larger than your balance is not allowed")
         else:
             fn(self, amount)
     return inner
@@ -41,20 +41,27 @@ class BankAccount:
     
     @enough_in_balance
     @time_transaction_decorator
-    def withdraw(self, amount): #withdraw amount from the balance
+    def withdrawl(self, amount): #withdraw amount from the balance
         self.balance -= amount
 
     def balance_inquiry(self):
         return print(f"current balance is {self.balance} kr")
     def transaction_history(self):
         if self.transactions:
-            for i in self.transactions:
-                print(i)
+            for i in range(len(self.transactions)):
+                type = self.transactions[i].get("type")
+                amount = self.transactions[i].get("amount")
+                timestamp = self.transactions[i].get("timestamp")
+                print(f"at {timestamp} you made a {type} of {amount} kr")
         else:
             print("there is no history")
 
     def retrive_transactions(self):
-        pass
+        if self.transactions:
+            for i in self.transactions:
+                print(i)
+        else:
+            print("there is no history")
     def account_statement(self):
         pass
     def account_summary(self):
@@ -98,7 +105,7 @@ Type a number """)
         case "3": #Withdraws an amount from the account
             if is_created():
                 amount = float(input("how much do you want to withdraw? "))
-                account.withdraw(amount)
+                account.withdrawl(amount)
             else:
                 print("")
         case "4": #checks the balance
@@ -125,4 +132,4 @@ Type a number """)
             if is_created():
                 print("account still exists")
         case _:
-            raise ValueError("That is NOT a valid choice")
+            print("That is NOT a valid choice")
