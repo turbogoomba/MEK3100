@@ -1,5 +1,6 @@
 import time
 from functools import wraps
+import random
 
 def time_transaction_decorator(fn):
     @wraps(fn)
@@ -21,6 +22,7 @@ def enough_in_balance(fn):
             fn(self, amount)
     return inner
 
+made_first_time = False
 account_created = False
 
 def is_created(skip_print = False):
@@ -31,9 +33,10 @@ def is_created(skip_print = False):
     return True
 
 class BankAccount:
-    def __init__(self,):
+    def __init__(self, acc_num):
         self.balance = 0
         self.transactions = []
+        self.account_number = acc_num
 
     @time_transaction_decorator
     def deposit(self, amount): #deposit amount into the balance
@@ -63,13 +66,29 @@ class BankAccount:
         else:
             print("there is no history")
     def account_statement(self):
-        pass
+        
+        print("_"*100)
+        print("your account statement:")
+        print("_ "*50)
+        self.transaction_history()
+        print("_ "*50)
+        self.balance_inquiry()
     def account_summary(self):
-        pass
+        print("_"*100)
+        print("your account summary:")
+        print("_ "*50)
+        print(f"your account number is {self.account_number}")
+        self.balance_inquiry()
+        print(f"you have made {len(self.transactions)} transactions in total")
     def account_clousure(self):
-        pass
+        self.balance = 0
+        self.transactions = []
+
     def is_account_closed(self):
-        pass
+        if not (account_created):
+            print("the account is closed")
+        else:
+            print("the account is still open")
 
 
 while True:
@@ -85,15 +104,18 @@ what do you want to do?:
 Type a number """)
     print("\n")
     match menu:
-        case "0": #Stops the programm
+        case "0":
+            print("you have quit the program")
             quit()
         case "1": #Creates an account
-                if is_created(skip_print = True):
-                    print("Account already exists")
-                else:
-                    account = BankAccount() #makes the account again and resets the balance aswell as the history
-                    print("your account has succesfully been created")
-                    account_created = True
+            made_first_time = True
+            if is_created(skip_print = True):
+                print("Account already exists")
+            else:
+                account_number = random.randint(1,100000)
+                account = BankAccount(account_number) #makes the account again and resets the balance aswell as the history
+                print("your account has succesfully been created")
+                account_created = True
                 
         case "2": #Deposits an amount into the account
             if is_created():
@@ -126,7 +148,10 @@ Type a number """)
                 print("account is closed")
                 account_created = False
         case "10": # checks if the account is closed
-            if is_created():
-                print("account still exists")
-        case _:
-            print("That is NOT a valid choice")
+            if made_first_time:
+                account.is_account_closed()
+            else:
+                print("you havent made an account. you can therefore not closed one")
+                
+        case _: #Stops the programm
+            print("That is NOT valid, pick a number from 0-10")
